@@ -47,13 +47,6 @@ asmlinkage int sys_put_data(char* source, size_t size) {
     struct bdev_layout *bdev_blk;
     struct block_device *bdev_temp;
 
-    /*
-    int index;
-    unsigned long last_epoch;
-    unsigned long updated_epoch;
-    unsigned long grace_period_threads;
-    */
-
     printk("%s: put_data invocata\n", MODNAME);
 
     // sanity check
@@ -156,22 +149,6 @@ asmlinkage int sys_put_data(char* source, size_t size) {
     // aggiunta del blocco appena scritto alla rcu_list per renderlo visibile
     list_insert(&head, i);
     AUDIT printk(KERN_INFO "%s: blocco %d aggiunto alla lista dei messaggi validi\n", MODNAME, i);
-
-    // Move to a new epoch
-    /*
-    updated_epoch = (rcu.next_epoch_index) ? MASK : 0;
-    rcu.next_epoch_index += 1;
-    rcu.next_epoch_index %= 2;
-
-    last_epoch = __atomic_exchange_n(&(rcu.epoch), updated_epoch, __ATOMIC_SEQ_CST);
-    index = (last_epoch & MASK) ? 1 : 0; 
-	grace_period_threads = last_epoch & (~MASK); 
-
-	AUDIT printk(KERN_INFO "%s: put_data (waiting %lu readers on index = %d)\n", MODNAME, grace_period_threads, index);
-
-    wait_event_interruptible(readers_wq, rcu.standing[index] >= grace_period_threads);
-    rcu.standing[index] = 0;
-    */
 
     mutex_unlock(&(rcu.write_lock));
 
