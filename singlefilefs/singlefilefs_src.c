@@ -173,7 +173,6 @@ int restore_blocks(void) {
                 if (get_block_num(bdev_blk->next_block) != get_block_num((unsigned int) -1)) { // se il blocco ha un successore
                     successors[i] = get_block_num(bdev_blk->next_block); // aggiorna successore del blocco i
                     predecessors[get_block_num(bdev_blk->next_block)] = i; // aggiorna predecessore next_block
-                    //printk(KERN_INFO "%s: succes[%d]=%d | predec[%d]=%d\n", MODNAME, i, successors[i], get_block_num(bdev_blk->next_block), predecessors[get_block_num(bdev_blk->next_block)]);
                 }
             }
             else { // blocco invalido
@@ -232,15 +231,13 @@ int persistence(struct block_device *bdev_temp) {
                         next_block_num = (unsigned int) -1;
                     else // il nodo possiede un successore
                         next_block_num = set_valid(next_block_num);
-                    //printk(KERN_INFO "%s: successore di %d -> %d - val %d\n", MODNAME, i, get_block_num(next_block_num), get_validity(next_block_num));
                 }
                 else { // blocco non presente aggiorna solo validità (ad invalido)
                     next_block_num = set_invalid(0);
                 }
 
                 // scrittura in cache e flush verso il dispositivo
-                memcpy(&(((struct bdev_layout *) bh->b_data)->next_block), &next_block_num, sizeof(unsigned int)); 
-                //printk(KERN_INFO "%s: copiato nel buffer val %d e next %d", MODNAME, get_validity(((struct bdev_layout *) bh->b_data)->next_block), get_block_num(((struct bdev_layout *) bh->b_data)->next_block));               
+                memcpy(&(((struct bdev_layout *) bh->b_data)->next_block), &next_block_num, sizeof(unsigned int));               
                 mark_buffer_dirty(bh);
                 if (sync_dirty_buffer(bh) == 0) {
                     AUDIT printk(KERN_INFO "%s: scrittura sincrona avvenuta con successo\n", MODNAME);
