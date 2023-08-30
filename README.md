@@ -50,11 +50,11 @@ Le system call implementate sono:
 
 Le file operation sono invece:
 
-1.  ```int dev_open(struct inode *inode, struct file *file)``` apre il dispositivo come stream di byte.
+1.  ```int onefilefs_open(struct inode *inode, struct file *file)``` apre il dispositivo come stream di byte.
 
-2.  ```int dev_release(struct inode *inode, struct file *file)``` chiude il file associato al dispositivo.
+2.  ```int onefilefs_release(struct inode *inode, struct file *file)``` chiude il file associato al dispositivo.
 
-3.  ```ssize_t dev_read(struct file *filp, char *buf, size_t len, loff_t *off)``` legge solo i blocchi correntemente validi, e li legge esattamente nell'ordine con cui i rispettivi dati sono stati scritti con la system call put_data() (per cui gli indici dei blocchi non sono rilevanti).
+3.  ```ssize_t onefilefs_read(struct file *filp, char *buf, size_t len, loff_t *off)``` legge solo i blocchi correntemente validi, e li legge esattamente nell'ordine con cui i rispettivi dati sono stati scritti con la system call put_data() (per cui gli indici dei blocchi non sono rilevanti).
 
   
 
