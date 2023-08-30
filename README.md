@@ -212,4 +212,26 @@ Il software non interattivo genera invece un insieme di thread che invocano conc
 
 ## Utilizzo
 
-Il modulo per il kernel Linux è stato sviluppato sulla versione 6.2.0-26-generic. Per inserire correttamente il modulo all'interno del kernel è prima necessario inserire il modulo ```the_usctm.ko``` (necessario per la scoperta dell'indirizzo corrente della system call table) seguendo le istruzioni nel make file presente all'interno della sottocartella ```syscall-table/```. 
+Il modulo per il kernel Linux è stato sviluppato sulla versione 6.2.0-26-generic. Per inserire correttamente il modulo all'interno del kernel è prima necessario inserire il modulo ```the_usctm.ko``` (necessario per la scoperta dell'indirizzo corrente della system call table) seguendo le istruzioni nel make file presente all'interno della sotto-cartella ```syscall-table/```. 
+
+### Parametri configurabili prima della compilazione
+Prima di effettuare la compilazione è possibile configurare i seguenti parametri:
+1.	Nel Makefile nella directory principale bisogna configurare ```NBLOCKS```, che rappresenta il numero di blocchi di dati da inserire nell'immagine. Attenzione: ```NBLOCKS``` include anche il superblocco e l'inode (ad esempio, ```NBLOCKS=6``` indica che si stanno inserendo nell'immagine 4 blocchi dati).
+2.	Nel file header ```common_header.h``` bisogna:
+	* In ```NBLOCKS``` inserire lo stesso valore del punto precedente;
+	* Cambiare ```IMAGE_PATH``` con il proprio percorso corretto del file immagine.
+3. Commentare/Decommentare la ```#define SYNC_WRITE_BACK``` se si vuole che la scrittura sul device avvenga in maniera asincrona/sincrona.
+
+### Compilazione del modulo e montaggio del file system
+Per compilare ed inserire correttamente il modulo è necessario eseguire i seguenti comandi (è richiesto essere utente root):
+1. ```make all``` per compilare tutti i file necessari;
+2. ```make create-fs``` per formattare il file immagine (block device logico);
+3. ```make insmod``` per inserire il modulo e registrare le nuove system call, il device driver e il file system;
+4. ```make mount-fs``` per montare il file system.
+
+### Clean up
+Per smontare il file system e rimuovere il modulo è necessario eseguire i seguenti comandi (è richiesto essere utente root):
+1. ```make umount-fs``` per smontare il file system;
+2. ```make rmmod``` per rimuovere il modulo;
+3. ```make clean``` per rimuovere tutti i file generati dal comando ```make all```.
+4. Spostarsi nella sotto-cartella ```syscall-table/``` ed eseguire il comando ```make rmmod``` per rimuovere il modulo per la scoperta dell'indirizzo corrente della system call table.
