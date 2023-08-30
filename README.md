@@ -220,7 +220,7 @@ Prima di effettuare la compilazione è possibile configurare i seguenti parametr
 2.	Nel file header ```common_header.h``` bisogna:
 	* In ```NBLOCKS``` inserire lo stesso valore del punto precedente;
 	* Cambiare ```IMAGE_PATH``` con il proprio percorso corretto del file immagine.
-3. Commentare/Decommentare la ```#define SYNC_WRITE_BACK``` se si vuole che la scrittura sul device avvenga in maniera asincrona/sincrona.
+3. Commentare/decommentare la ```#define SYNC_WRITE_BACK``` nel file header ```utils_header.h``` se si vuole che la scrittura sul device avvenga in maniera asincrona/sincrona.
 
 ### Compilazione del modulo e montaggio del file system
 Per compilare ed inserire correttamente il modulo è necessario eseguire i seguenti comandi (è richiesto essere utente root):
