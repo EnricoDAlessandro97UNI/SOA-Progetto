@@ -90,8 +90,6 @@ static void singlefilefs_kill_superblock(struct super_block *s) {
     
     long unsigned int mounted_curr;
 
-    printk("%s: current usages: %d\n", MODNAME, fs_info.usage);
-
     if (atomic_read(&(fs_info.usage)) != 0) {
         printk("%s: smontaggio del file system impossibile, qualche thread sta eseguendo qualche operazione\n", MODNAME);
         return;
@@ -121,7 +119,7 @@ struct dentry *singlefilefs_mount(struct file_system_type *fs_type, int flags, c
 
     ret = init_srcu_struct(&(fs_info.srcu));
     if (ret != 0) {
-        printk("%s: errore durante il montaggio del filesystem", MODNAME);
+        printk(KERN_CRIT "%s: errore durante il montaggio del filesystem", MODNAME);
         return ERR_PTR(-ENOMEM);
     }
 
@@ -134,7 +132,7 @@ struct dentry *singlefilefs_mount(struct file_system_type *fs_type, int flags, c
 
     d_ret = mount_bdev(fs_type, flags, dev_name, data, singlefilefs_fill_super);
     if (unlikely(IS_ERR(d_ret))) 
-        printk("%s: errore durante il montaggio del filesystem", MODNAME);
+        printk(KERN_CRIT "%s: errore durante il montaggio del filesystem", MODNAME);
     else 
         printk("%s: singlefilefs montato con successo dal dispositivo %s\n", MODNAME, dev_name);
     

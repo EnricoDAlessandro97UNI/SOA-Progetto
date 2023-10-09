@@ -61,7 +61,7 @@ int set_sb_info(struct super_block *global_sb, unsigned int new_first_valid, uns
         AUDIT printk(KERN_INFO "%s: scrittura sincrona avvenuta con successo", MODNAME);
     }
     else {
-        printk("%s: scrittura sincrona fallita", MODNAME);
+        printk(KERN_CRIT "%s: scrittura sincrona fallita", MODNAME);
     }
     #endif
 
@@ -91,7 +91,7 @@ int set_block_metadata_valid(struct super_block *global_sb, unsigned int last_va
         AUDIT printk(KERN_INFO "%s: scrittura sincrona avvenuta con successo", MODNAME);
     }
     else {
-        printk("%s: scrittura sincrona fallita", MODNAME);
+        printk(KERN_CRIT "%s: scrittura sincrona fallita", MODNAME);
     }
     #endif
 
@@ -122,7 +122,7 @@ int update_block_metadata(struct super_block *global_sb, unsigned int block_num,
         AUDIT printk(KERN_INFO "%s: scrittura sincrona avvenuta con successo", MODNAME);
     }
     else {
-        printk("%s: scrittura sincrona fallita", MODNAME);
+        printk(KERN_CRIT "%s: scrittura sincrona fallita", MODNAME);
     }
     #endif
 
@@ -161,7 +161,7 @@ int set_block_data(struct super_block *global_sb, unsigned int block_num, char *
         AUDIT printk(KERN_INFO "%s: scrittura sincrona avvenuta con successo", MODNAME);
     }
     else {
-        printk("%s: scrittura sincrona fallita", MODNAME);
+        printk(KERN_CRIT "%s: scrittura sincrona fallita", MODNAME);
     }
     #endif
 
@@ -193,7 +193,7 @@ int invalidate_block(struct super_block *global_sb, unsigned int block_num) {
         AUDIT printk(KERN_INFO "%s: scrittura sincrona avvenuta con successo", MODNAME);
     }
     else {
-        printk("%s: scrittura sincrona fallita", MODNAME);
+        printk(KERN_CRIT "%s: scrittura sincrona fallita", MODNAME);
     }
     #endif
 
@@ -363,7 +363,7 @@ void print_block_status(struct super_block *global_sb) {
     while (cycle < NBLOCKS-2) {
         bh = sb_bread(global_sb, blk_offset(cycle));
         bdev_blk = (struct bdev_layout *) bh->b_data;
-        printk("%s: %d -> %d | v: %d\n", MODNAME, cycle, get_block_num(bdev_blk->next_block), get_validity(bdev_blk->next_block));
+        printk(KERN_INFO "%s: %d -> %d | v: %d\n", MODNAME, cycle, get_block_num(bdev_blk->next_block), get_validity(bdev_blk->next_block));
         brelse(bh);
         cycle++;
     } 

@@ -21,7 +21,7 @@ struct dentry *onefilefs_lookup(struct inode *parent_inode, struct dentry *child
     struct buffer_head *bh = NULL;
     struct inode *the_inode = NULL;
 
-    printk("%s: running the lookup inode-function for name %s",MODNAME,child_dentry->d_name.name);
+    //printk("%s: running the lookup inode-function for name %s",MODNAME,child_dentry->d_name.name);
 
     if (!strcmp(child_dentry->d_name.name, UNIQUE_FILE_NAME)) {
 	
@@ -112,35 +112,30 @@ ssize_t onefilefs_read(struct file *file, char __user *buf, size_t count, loff_t
 
 	// incremento del contatore atomico degli utilizzi del file system
     atomic_fetch_add(1, &(fs_info.usage));
-	printk(KERN_INFO "%s: [put_data()] - usage: %d\n", MODNAME, fs_info.usage);
 
 	// sanity checks
     if (!fs_info.mounted) { // controlla se il file system è montato
-        printk("%s: [onefilefs_read()] - il file system non è montato\n", MODNAME);
+        printk(KERN_INFO "%s: [onefilefs_read()] - il file system non è montato\n", MODNAME);
         atomic_fetch_add(-1, &(fs_info.usage));
-		printk(KERN_INFO "%s: [put_data()] - usage: %d\n", MODNAME, fs_info.usage);
         return -ENODEV;
     }  
 
 	// acquisizione della sleepable RCU read lock
     srcu_idx = srcu_read_lock(&(fs_info.srcu));
-    printk(KERN_INFO "%s: [onefilefs_read()] - srcu_read_lock correttamente acquisito\n", MODNAME);
 
 	// recupero dei dati memorizzati nel superblocco
     sb_disk = get_sb_info(global_sb);
     if (sb_disk == NULL) {
-        printk("%s: [onefilefs_read()] - errore durante il recupero del superblocco\n", MODNAME);
+        printk(KERN_CRIT "%s: [onefilefs_read()] - errore durante il recupero del superblocco\n", MODNAME);
         srcu_read_unlock(&(fs_info.srcu), srcu_idx);
-        printk("%s: [onefilefs_read()] - srcu_read_lock correttamente rilasciato\n", MODNAME);
         ret = -EIO;
         goto read_exit;
     }
 	
 	// controllo se attualmente ci sono blocchi validi
 	if (sb_disk->first_valid == -1) {
-		printk("%s: [onefilefs_read()] - nessun blocco valido\n", MODNAME);
+		printk(KERN_INFO "%s: [onefilefs_read()] - nessun blocco valido\n", MODNAME);
         srcu_read_unlock(&(fs_info.srcu), srcu_idx);
-        printk("%s: [onefilefs_read()] - srcu_read_lock correttamente rilasciato\n", MODNAME);
 		ret = 0;
 		goto read_exit;
 	}
@@ -152,7 +147,7 @@ ssize_t onefilefs_read(struct file *file, char __user *buf, size_t count, loff_t
 		// recupero del blocco da leggere
 		bdev_blk = get_block(global_sb, blk_offset(curr_block_num));
 		if (bdev_blk == NULL) {
-			printk("%s: [onefilefs_read()] - errore durante il recupero del blocco %d\n", MODNAME, curr_block_num);
+			printk(KERN_CRIT "%s: [onefilefs_read()] - errore durante il recupero del blocco %d\n", MODNAME, curr_block_num);
 			ret = -EIO;
 			goto read_exit;
 		}
@@ -162,7 +157,7 @@ ssize_t onefilefs_read(struct file *file, char __user *buf, size_t count, loff_t
 
 		klvl_buf = kmalloc(length + 1, GFP_KERNEL);
 		if (!klvl_buf) {
-			printk("%s: [onefilefs_read()] - errore kmalloc, impossibilità di allocare memoria\n", MODNAME);
+			printk(KERN_CRIT "%s: [onefilefs_read()] - errore kmalloc, impossibile allocare memoria\n", MODNAME);
 			ret = -1;
 			goto read_exit;
 		}
@@ -183,13 +178,12 @@ ssize_t onefilefs_read(struct file *file, char __user *buf, size_t count, loff_t
 	copied = copied + 1 - ret;
 	ret = count;
 
-	printk("%s: [onefilefs_read()] - read avvenuta con successo\n", MODNAME);
-
 read_exit:
 	atomic_fetch_add(-1, &(fs_info.usage));
-	printk(KERN_INFO "%s: [put_data()] - usage: %d\n", MODNAME, fs_info.usage);
 
 	*pos = *pos + copied;
+
+	printk("%s: [onefilefs_read()] - read avvenuta con successo\n", MODNAME);
 
 	return ret;
 }
