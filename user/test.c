@@ -28,10 +28,8 @@ void *test_put_syscall(void *arg) {
     size = strlen(source);
 
     pthread_barrier_wait(&barrier);
-
-    do {    
-        ret = syscall(PUT_DATA, source, size);
-    } while(errno == EAGAIN);
+    
+    ret = syscall(PUT_DATA, source, size);
 
     if(ret >= 0) {
         printf("[THREAD %ld]: esecuzione test_put_syscall() terminata con successo e scritto il blocco %d\n", tid, ret);
