@@ -148,6 +148,7 @@ ssize_t onefilefs_read(struct file *file, char __user *buf, size_t count, loff_t
 		bdev_blk = get_block(global_sb, blk_offset(curr_block_num));
 		if (bdev_blk == NULL) {
 			printk(KERN_CRIT "%s: [onefilefs_read()] - errore durante il recupero del blocco %d\n", MODNAME, curr_block_num);
+			srcu_read_unlock(&(fs_info.srcu), srcu_idx);
 			ret = -EIO;
 			goto read_exit;
 		}
@@ -158,6 +159,7 @@ ssize_t onefilefs_read(struct file *file, char __user *buf, size_t count, loff_t
 		klvl_buf = kmalloc(length + 1, GFP_KERNEL);
 		if (!klvl_buf) {
 			printk(KERN_CRIT "%s: [onefilefs_read()] - errore kmalloc, impossibile allocare memoria\n", MODNAME);
+			srcu_read_unlock(&(fs_info.srcu), srcu_idx);
 			ret = -1;
 			goto read_exit;
 		}
