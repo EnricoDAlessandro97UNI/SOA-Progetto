@@ -467,7 +467,7 @@ Per sincronizzare i thread che operano sulle strutture dati precedenti è stato 
 
   
 
-*  ```put_data()```: in questo caso si utilizza il write_lock() per coordinare gli scrittori tra loro, cosa che non viene direttamente garantita dalla sincronizzazione basata su RCU.
+*  ```put_data()```: in questo caso si utilizza il write_lock per coordinare gli scrittori tra loro, cosa che non viene direttamente garantita dalla sincronizzazione basata su RCU.
 
   
 
