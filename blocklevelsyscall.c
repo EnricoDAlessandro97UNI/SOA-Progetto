@@ -67,13 +67,7 @@ asmlinkage int sys_put_data(char* source, size_t size) {
     printk(KERN_INFO "%s: [put_data()] - messaggio da inserire: %s (len=%lu)\n", MODNAME, klvl_buf, size+1); 
 
     // prendo il lock per sincronizzare gli scrittori (no concorrenza su tutte le operazioni di scrittura fino al rilascio del lock)
-    ret = mutex_trylock(&(fs_info.write_lock));
-    if (ret == 0) {
-        kfree(klvl_buf);
-        printk(KERN_CRIT "%s: [put_data()] - errore mutex_trylock\n", MODNAME);
-        atomic_fetch_add(-1, &(fs_info.usage));
-        return -EBUSY;
-    }
+    mutex_lock(&(fs_info.write_lock));
 
     // recupero del superblocco
     sb_disk = get_sb_info(global_sb);
@@ -262,12 +256,7 @@ asmlinkage int sys_invalidate_data(int offset) {
     }
 
     // prendo il lock per sincronizzare gli scrittori (no concorrenza su tutte le operazioni di scrittura fino al rilascio del lock)
-    ret = mutex_trylock(&(fs_info.write_lock));
-    if (ret == 0) {
-        printk(KERN_CRIT "%s: [invalidate_data()] - errore mutex_trylock\n", MODNAME);
-        atomic_fetch_add(-1, &(fs_info.usage));
-        return -EBUSY;
-    }
+    mutex_lock(&(fs_info.write_lock));
 
     // recupero dei dati memorizzati nel superblocco
     sb_disk = get_sb_info(global_sb);

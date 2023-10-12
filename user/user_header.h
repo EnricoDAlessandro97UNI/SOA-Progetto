@@ -37,8 +37,8 @@ char menu[] = {"\n\n************************************************************
             case EINVAL: \
                 printf("[Errore]: parametri non validi\n"); \
                 break; \
-            case EBUSY: \
-                printf("[Errore]: try lock occupato\n"); \
+            case EIO: \
+                printf("[Errore]: errore durante il recupero dei dati dal dispositivo\n"); \
                 break; \
             default: \
                 printf("[Errore]: generico\n"); \
@@ -60,6 +60,9 @@ char menu[] = {"\n\n************************************************************
             case ENODEV: \
                 printf("[Errore]: filesystem non montato\n"); \
                 break; \
+            case EIO: \
+                printf("[Errore]: errore durante il recupero dei dati dal dispositivo\n"); \
+                break; \
             default: \
                 printf("[Errore]: generico\n"); \
                 break; \
@@ -79,6 +82,9 @@ char menu[] = {"\n\n************************************************************
                 break; \
             case ENODEV: \
                 printf("[Errore]: filesystem non montato\n"); \
+                break; \
+            case EIO: \
+                printf("[Errore]: errore durante il recupero dei dati dal dispositivo\n"); \
                 break; \
             default: \
                 printf("[Errore]: generico\n"); \
