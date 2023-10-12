@@ -227,13 +227,13 @@ A supporto delle operazioni del modulo viene utilizzata anche una struttura dati
 
 filesystem_info {
 
-unsigned int mounted;
+  unsigned int mounted;
 
-atomic_t usage;
+  atomic_t usage;
 
-struct mutex write_lock;
+  struct mutex write_lock;
 
-}
+};
 
 ```
 
