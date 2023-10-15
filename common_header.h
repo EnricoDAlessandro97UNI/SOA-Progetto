@@ -5,8 +5,8 @@
 #define METADATA_SIZE 4
 #define DATA_SIZE (DEFAULT_BLOCK_SIZE - METADATA_SIZE)
 
-#define NBLOCKS 6                                               // change here the number of the blocks (superblock and inode are included)
-#define IMAGE_PATH "/home/enrico/Desktop/SOA-Progetto/image"  // change this line with your image file path
+#define NBLOCKS 6                   // change here the number of the blocks (superblock and inode are included)
+#define IMAGE_PATH "../image"       // change this line with your image file path
 
 #define VALID_MASK 0x80000000       // 0x80000000 -> 1000 0000 ... 0000
 #define INVALID_MASK (~VALID_MASK)  // 0x7FFFFFFF -> 0111 1111 ... 1111
